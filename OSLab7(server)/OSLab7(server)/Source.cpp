@@ -12,47 +12,14 @@ using namespace std;
 
 struct sh_field
 {
-	char inp_str[512], out_str[512];
-	INT32 len_str;
+	char inp_str[512], sub_str[3];
+	int len_str;
+	int position = -1;
 };
 
 void replaceRange(sh_field* field) {
 	string s(field->inp_str);
-	string result;
-	int currentPos = 0;
-	int delimiterPos = -1;
-
-	for (int i = 0; i < s.size(); i++) {
-		if (s[i] == '-') {
-			if (i == 0 || i == s.size() - 1) {
-				result.push_back(s[i]);
-			}
-			else if (isalpha(s[i - 1]) && isalpha(s[i + 1])) {
-				int startSymbolCode = ((int)s[i - 1]);
-				int endSymbolCode = (int)s[i + 1];
-
-				if (startSymbolCode < endSymbolCode)
-					startSymbolCode++;
-				else if(startSymbolCode > endSymbolCode)
-					startSymbolCode--;
-
-				while (startSymbolCode != endSymbolCode) {
-					result.push_back((char)startSymbolCode);
-					if (startSymbolCode < endSymbolCode)
-						startSymbolCode++;
-					else if (startSymbolCode > endSymbolCode)
-						startSymbolCode--;
-				}
-			}
-			else
-				result.push_back(s[i]);
-		}
-		else {
-			result.push_back(s[i]);
-		}
-	}
-	
-	strcpy_s(field->out_str, result.c_str());
+	field->position = s.rfind(field->sub_str);
 }
 
 int main() {

@@ -11,21 +11,25 @@
 
 struct sh_field
 {
-	char inp_str[512], out_str[512];
+	char inp_str[512], sub_str[3];
 	int len_str;
+	int position = -1;
 };
 
 void createTask(sh_field* field) {
-	field->len_str = rand() % 20 + 2;
+	field->len_str = rand() % 30 + 10;
 	field->inp_str[field->len_str] = '\0';
-	for (int i = 0; i != field->len_str; i++) {
-		if (rand() % 4 == 0)
-			field->inp_str[i] = '-';
-		else
-			field->inp_str[i] = (char)(rand() % 26 + 97);
+	for (int i = 0; i != field->len_str; i++) {		
+		field->inp_str[i] = (char)(rand() % 26 + 97);
+	}
+	
+	int subStringPosition = rand() % 25;
+	for (int i = 0; i < 3; i++) {
+		field->sub_str[i] = field->inp_str[subStringPosition];
+		subStringPosition++;
 	}
 
-	printf("Запрос: %s ... ", field->inp_str);
+	printf("Запрос: %s %s\t", field->inp_str, field->sub_str);
 }
 
 int main() {
@@ -66,7 +70,7 @@ int main() {
 	ReleaseSemaphore(servwrite_semaphore, 1, NULL);
 	/*ожидание ответа от сервера*/
 	WaitForSingleObject(clwrite_semaphore, INFINITE);
-	printf("Ответ: %s\n", field->out_str);
+	printf("Ответ: %d\n", field->position);
 	UnmapViewOfFile(field);
 	/*дает понять, что сервер свободен*/
 	ReleaseSemaphore(clwork_semaphore, 1, NULL);
